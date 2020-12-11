@@ -1,38 +1,55 @@
 import moment from "moment";
-import React from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useInfiniteQuery } from "react-query";
 import { fetchMoviesApi } from "../apis/fetchMoviesApi";
 import Media from "../components/Media";
 
-const movie_data = {
-  include_adult: false,
-  include_video: false,
-  page: 1,
-  query: "test",
-  primary_release_year: "2008",
-  "release_date.lte": moment().format("Y-M-D"),
-  sort_by: "popularity.desc",
-  with_genres: 28,
-  with_original_language: "en",
-};
-
 const Movies = ({ navigation }: any) => {
-  const { data: movies, status } = useQuery(
-    ["fetchMovies", { payload: movie_data }],
-    fetchMoviesApi
+  const [query, setQuery] = useState("");
+  const [genre, setGenre] = useState("");
+  const [language, setLanguage] = useState("en");
+  const [year, setYear] = useState("");
+
+  const meta = {
+    include_adult: false,
+    include_video: false,
+    query,
+    primary_release_year: year,
+    "release_date.lte": moment().format("Y-M-D"),
+    sort_by: "popularity.desc",
+    with_genres: genre,
+    with_original_language: language,
+  };
+
+  const { data: movies, fetchMore, isLoading, isFetching } = useInfiniteQuery(
+    ["fetchMovies", meta],
+    fetchMoviesApi,
+    {
+      getFetchMore: (lastGroup) => lastGroup.page + 1,
+    }
   );
 
-  if (status === "loading") {
+  if (isLoading) {
     return <ActivityIndicator />;
   }
+
+  const sortedData = movies?.reduce((items, current) => {
+    return [...items, ...current.results];
+  }, []);
 
   return (
     <View style={styles.container}>
       <FlatList
-        numColumns={3}
-        data={movies.results}
+        numColumns={4}
+        data={sortedData}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }: any) => {
           return (
@@ -41,6 +58,21 @@ const Movies = ({ navigation }: any) => {
               title={item.title}
               onPress={() => navigation.push("MovieDetail", { id: item.id })}
             />
+          );
+        }}
+        ListFooterComponent={() => {
+          return isFetching ? (
+            <Text>Loading...</Text>
+          ) : (
+            <TouchableOpacity
+              disabled={isFetching}
+              style={{ padding: 10, alignItems: "center" }}
+              onPress={() => {
+                fetchMore();
+              }}
+            >
+              <Text>Load More</Text>
+            </TouchableOpacity>
           );
         }}
       />

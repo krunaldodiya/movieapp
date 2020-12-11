@@ -15,14 +15,15 @@ interface FetchTvShowApiPayload {
 
 export const fetchTvShowsApi = async (
   _key: string,
-  payload: FetchTvShowApiPayload
+  payload: FetchTvShowApiPayload,
+  page: number = 1
 ): Promise<any> => {
   const section = payload.query ? "search" : "discover";
-  const url = `${tmdbApiUrl}/${section}/tv`;
+  const url = `${tmdbApiUrl}/${section}/tv?api_key=${tmdbApiKey}`;
 
   const { data } = await axios.get(url, {
     cancelToken: getSource().token,
-    params: { ...payload, api_key: tmdbApiKey },
+    params: { ...payload, page },
   });
 
   return data;

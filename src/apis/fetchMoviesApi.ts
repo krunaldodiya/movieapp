@@ -15,14 +15,15 @@ interface FetchMoviesApiPayload {
 
 export const fetchMoviesApi = async (
   _key: string,
-  payload: FetchMoviesApiPayload
+  payload: FetchMoviesApiPayload,
+  page: number = 1
 ): Promise<any> => {
   const section = payload.query ? "search" : "discover";
-  const url = `${tmdbApiUrl}/${section}/movie`;
+  const url = `${tmdbApiUrl}/${section}/movie?api_key=${tmdbApiKey}`;
 
   const { data } = await axios.get(url, {
     cancelToken: getSource().token,
-    params: { ...payload, api_key: tmdbApiKey },
+    params: { ...payload, page },
   });
 
   return data;

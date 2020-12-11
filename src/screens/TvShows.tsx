@@ -1,38 +1,55 @@
 import moment from "moment";
-import React from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { useQuery } from "react-query";
+import React, { useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useInfiniteQuery } from "react-query";
 import { fetchTvShowsApi } from "../apis/fetchTvShowsApi";
 import Media from "../components/Media";
 
-const tv_data = {
-  include_adult: false,
-  include_video: false,
-  page: 1,
-  query: "test",
-  "air_date.lte": moment().format("Y-M-D"),
-  first_air_date_year: "2008",
-  sort_by: "popularity.desc",
-  with_genres: 28,
-  with_original_language: "en",
-};
-
 const TvShows = ({ navigation }: any) => {
-  const { data: series, status } = useQuery(
-    ["fetchTvShows", { payload: tv_data }],
-    fetchTvShowsApi
+  const [query, setQuery] = useState("");
+  const [genre, setGenre] = useState("");
+  const [language, setLanguage] = useState("en");
+  const [year, setYear] = useState("");
+
+  const meta = {
+    include_adult: false,
+    include_video: false,
+    query,
+    "air_date.lte": moment().format("Y-M-D"),
+    first_air_date_year: year,
+    sort_by: "popularity.desc",
+    with_genres: genre,
+    with_original_language: language,
+  };
+
+  const { data: series, fetchMore, isLoading, isFetching } = useInfiniteQuery(
+    ["fetchMovies", meta],
+    fetchTvShowsApi,
+    {
+      getFetchMore: (lastGroup) => lastGroup.page + 1,
+    }
   );
 
-  if (status === "loading") {
+  if (isLoading) {
     return <ActivityIndicator />;
   }
+
+  const sortedData = series?.reduce((items, current) => {
+    return [...items, ...current.results];
+  }, []);
 
   return (
     <View style={styles.container}>
       <FlatList
-        numColumns={3}
-        data={series.results}
+        numColumns={4}
+        data={sortedData}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }: any) => {
           return (
@@ -41,6 +58,21 @@ const TvShows = ({ navigation }: any) => {
               title={item.name}
               onPress={() => navigation.push("TvShowDetail", { id: item.id })}
             />
+          );
+        }}
+        ListFooterComponent={() => {
+          return isFetching ? (
+            <Text>Loading...</Text>
+          ) : (
+            <TouchableOpacity
+              disabled={isFetching}
+              style={{ padding: 10, alignItems: "center" }}
+              onPress={() => {
+                fetchMore();
+              }}
+            >
+              <Text>Load More</Text>
+            </TouchableOpacity>
           );
         }}
       />
