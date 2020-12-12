@@ -22,7 +22,7 @@ const MovieLinks = ({ route, navigation }: any) => {
   const {
     data: links,
     status: fetchTorrentLinkStatus,
-    isFetching,
+    isLoading,
   } = useFetchTorrentLinks({
     aka: title,
     imdb_id: external_ids?.imdb_id,
@@ -42,6 +42,7 @@ const MovieLinks = ({ route, navigation }: any) => {
         {qualities.map((quality: IQualities) => {
           return (
             <TouchableOpacity
+              key={quality}
               onPress={() => {
                 setSelectedQuality(quality);
               }}
@@ -59,7 +60,7 @@ const MovieLinks = ({ route, navigation }: any) => {
       </View>
 
       <View>
-        {isFetching ? (
+        {isLoading ? (
           <ActivityIndicator />
         ) : (
           <FlatList
