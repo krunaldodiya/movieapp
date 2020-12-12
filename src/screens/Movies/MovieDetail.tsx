@@ -1,30 +1,11 @@
 import React from "react";
 import { Text, View } from "react-native";
-import { queryCache, useQuery } from "react-query";
-import { fetchMovieDetailApi } from "../../apis/fetchMovieDetailApi";
-import { movieMetaStore } from "../../store/movieMetaStore";
+import useFetchMovieDetail from "../../hooks/useFetchMovieDetail";
 
 const MovieDetail = ({ route, navigation }: any) => {
   const { id } = route.params;
-  const { meta } = movieMetaStore();
 
-  const { data: movie, status } = useQuery(
-    ["fetchMovieDetail", { id }],
-    fetchMovieDetailApi,
-    {
-      initialData: () => {
-        const movies: any = queryCache.getQueryData(["fetchMovies", meta]);
-
-        const sortedData = movies?.reduce((items: any[], current: any) => {
-          return [...items, ...current.results];
-        }, []);
-
-        return sortedData.find((movie: any) => movie.id === id);
-      },
-      initialStale: true,
-    }
-  );
-  console.log({ movie });
+  const { data: movie } = useFetchMovieDetail(id);
 
   const { release_date, title, imdb_id } = movie;
 

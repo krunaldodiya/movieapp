@@ -1,9 +1,10 @@
 import axios, { getSource } from "../libs/http";
 
+export type IQualities = "360p" | "480p" | "720p" | "1080p";
 interface FetchTorrentLinksApiPayload {
   aka: string;
   imdb_id: string;
-  quality: "240p" | "360p" | "720p" | "1080p";
+  quality: IQualities;
   year: number;
 }
 

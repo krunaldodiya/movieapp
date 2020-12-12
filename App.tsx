@@ -27,6 +27,7 @@ export default function App() {
       },
     },
   };
+
   return (
     <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="Home">

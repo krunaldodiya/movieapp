@@ -1,21 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { useMutation, useQuery } from "react-query";
-import { fetchMovieDetailApi } from "../../apis/fetchMovieDetailApi";
-import { fetchTorrentLinksApi } from "../../apis/fetchTorrentLinksApi";
+import {
+  fetchTorrentLinksApi,
+  IQualities,
+} from "../../apis/fetchTorrentLinksApi";
+import useFetchMovieDetail from "../../hooks/useFetchMovieDetail";
+import formatBytes from "../../libs/formatBytes";
+
+const qualities: IQualities[] = ["360p", "480p", "720p", "1080p"];
 
 const MovieLinks = ({ route, navigation }: any) => {
   const { id } = route.params;
-  const [links, setLinks] = useState<any[]>([]);
 
-  const { data: movie, status } = useQuery(
-    ["fetchMovieDetail", { id }],
-    fetchMovieDetailApi
-  );
+  const [links, setLinks] = useState<any[]>([]);
+  const [selectedQuality, setSelectedQuality] = useState<IQualities>();
+
+  const { data: movie } = useFetchMovieDetail(id);
 
   const [fetchLinks, { status: fetchTorrentLinkStatus }] = useMutation(
     fetchTorrentLinksApi
   );
+
+  useEffect(() => {
+    setSelectedQuality("720p");
+    handleFetchLinks("720p");
+  }, []);
 
   if (status === "loading") {
     return <ActivityIndicator />;
@@ -23,11 +34,9 @@ const MovieLinks = ({ route, navigation }: any) => {
 
   const { release_date, title, imdb_id } = movie;
 
-  const quality = "720p";
-
   const year = release_date?.split("-")[0];
 
-  const handleFetchLinks = async () => {
+  const handleFetchLinks = async (quality: IQualities) => {
     const data = await fetchLinks({
       aka: title,
       imdb_id,
@@ -40,27 +49,56 @@ const MovieLinks = ({ route, navigation }: any) => {
 
   return (
     <View>
-      <TouchableOpacity onPress={handleFetchLinks}>
-        <Text>MovieDetail</Text>
-      </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          padding: 10,
+        }}
+      >
+        {qualities.map((quality: IQualities) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedQuality(quality);
+                handleFetchLinks(quality);
+              }}
+            >
+              <Text
+                style={{
+                  color: quality === selectedQuality ? "green" : "black",
+                }}
+              >
+                {quality}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
 
       {fetchTorrentLinkStatus === "loading" && <Text>Fetching...</Text>}
 
-      <TouchableOpacity
-        onPress={() =>
-          navigation.push("Player", {
-            link: links[0]?.magnet_link
-              ? links[0]?.magnet_link
-              : links[0]?.direct_link,
-          })
-        }
-      >
-        <Text>
-          {links[0]?.magnet_link
-            ? links[0]?.magnet_link
-            : links[0]?.direct_link}
-        </Text>
-      </TouchableOpacity>
+      <FlatList
+        data={links}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.push("Player", {
+                  link: item?.magnet_link
+                    ? item?.magnet_link
+                    : item?.direct_link,
+                });
+              }}
+            >
+              <Text>{item?.title}</Text>
+              <Text>{item?.seeders}</Text>
+              <Text>{formatBytes(item?.size)}</Text>
+              <Text>{item?.tracker}</Text>
+            </TouchableOpacity>
+          );
+        }}
+      />
     </View>
   );
 };

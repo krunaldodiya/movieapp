@@ -9,6 +9,7 @@ const MovieDetailTab = ({ route, navigation }: any) => {
 
   return (
     <Tab.Navigator
+      lazy={true}
       initialRouteName="MovieInfo"
       swipeEnabled={true}
       tabBarPosition="bottom"
