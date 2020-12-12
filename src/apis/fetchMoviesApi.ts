@@ -21,10 +21,10 @@ export const fetchMoviesApi = async (
   const section = payload.query ? "search" : "discover";
   const url = `${tmdbApiUrl}/${section}/movie?api_key=${tmdbApiKey}`;
 
-  const { data } = await axios.get(url, {
-    cancelToken: getSource().token,
-    params: { ...payload, page },
-  });
-
-  return data;
+  return axios
+    .get(url, {
+      cancelToken: getSource().token,
+      params: { ...payload, page },
+    })
+    .then((response) => response.data);
 };

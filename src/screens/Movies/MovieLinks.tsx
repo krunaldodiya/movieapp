@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useMutation, useQuery } from "react-query";
-import { fetchMovieDetailApi } from "../apis/fetchMovieDetailApi";
-import { fetchTorrentLinksApi } from "../apis/fetchTorrentLinksApi";
+import { fetchMovieDetailApi } from "../../apis/fetchMovieDetailApi";
+import { fetchTorrentLinksApi } from "../../apis/fetchTorrentLinksApi";
 
-const MovieDetail = ({ route, navigation }: any) => {
+const MovieLinks = ({ route, navigation }: any) => {
   const { id } = route.params;
   const [links, setLinks] = useState<any[]>([]);
 
@@ -34,8 +34,6 @@ const MovieDetail = ({ route, navigation }: any) => {
       quality,
       year,
     });
-
-    console.log({ data });
 
     setLinks(data.links);
   };
@@ -67,4 +65,4 @@ const MovieDetail = ({ route, navigation }: any) => {
   );
 };
 
-export default MovieDetail;
+export default MovieLinks;

@@ -2,12 +2,12 @@ import "react-native-gesture-handler";
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Movies from "./src/screens/Movies";
-import TvShows from "./src/screens/TvShows";
-import MovieDetail from "./src/screens/MovieDetail";
-import TvShowDetail from "./src/screens/TvShowDetail";
 import Home from "./src/screens/Home";
+import MovieDetailTab from "./src/screens/MovieDetailTab";
+import Movies from "./src/screens/Movies";
 import Player from "./src/screens/Player";
+import TvShowDetailTab from "./src/screens/TvShowDetailTab";
+import TvShows from "./src/screens/TvShows";
 
 const Stack = createStackNavigator();
 
@@ -19,8 +19,10 @@ export default function App() {
         Home: "/",
         Movies: "/movies",
         TvShows: "/tv-shows",
+        MovieDetailTab: "/movie-detail-tab",
+        TvShowDetailTab: "/tv-show-detail-tab",
         MovieDetail: "/movie-detail",
-        TvShowDetail: "/tv-show-detail",
+        MovieLinks: "/movie-links",
         Player: "/player",
       },
     },
@@ -31,8 +33,8 @@ export default function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Movies" component={Movies} />
         <Stack.Screen name="TvShows" component={TvShows} />
-        <Stack.Screen name="MovieDetail" component={MovieDetail} />
-        <Stack.Screen name="TvShowDetail" component={TvShowDetail} />
+        <Stack.Screen name="MovieDetailTab" component={MovieDetailTab} />
+        <Stack.Screen name="TvShowDetailTab" component={TvShowDetailTab} />
         <Stack.Screen name="Player" component={Player} />
       </Stack.Navigator>
     </NavigationContainer>

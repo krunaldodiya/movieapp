@@ -56,7 +56,9 @@ const TvShows = ({ navigation }: any) => {
             <Media
               image={item.poster_path}
               title={item.name}
-              onPress={() => navigation.push("TvShowDetail", { id: item.id })}
+              onPress={() => {
+                navigation.push("TvShowDetailTab", { item });
+              }}
             />
           );
         }}

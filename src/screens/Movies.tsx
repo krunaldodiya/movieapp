@@ -1,5 +1,4 @@
-import moment from "moment";
-import React, { useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -8,34 +7,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useInfiniteQuery } from "react-query";
-import { fetchMoviesApi } from "../apis/fetchMoviesApi";
 import Media from "../components/Media";
+import useFetchMovies from "../hooks/useFetchMovies";
 
 const Movies = ({ navigation }: any) => {
-  const [query, setQuery] = useState("");
-  const [genre, setGenre] = useState("");
-  const [language, setLanguage] = useState("en");
-  const [year, setYear] = useState("");
-
-  const meta = {
-    include_adult: false,
-    include_video: false,
-    query,
-    primary_release_year: year,
-    "release_date.lte": moment().format("Y-M-D"),
-    sort_by: "popularity.desc",
-    with_genres: genre,
-    with_original_language: language,
-  };
-
-  const { data: movies, fetchMore, isLoading, isFetching } = useInfiniteQuery(
-    ["fetchMovies", meta],
-    fetchMoviesApi,
-    {
-      getFetchMore: (lastGroup) => lastGroup.page + 1,
-    }
-  );
+  const { data: movies, fetchMore, isLoading, isFetching } = useFetchMovies();
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -56,23 +32,43 @@ const Movies = ({ navigation }: any) => {
             <Media
               image={item.poster_path}
               title={item.title}
-              onPress={() => navigation.push("MovieDetail", { id: item.id })}
+              onPress={() => {
+                navigation.push("MovieDetailTab", { id: item.id });
+              }}
             />
           );
         }}
+        onEndReached={() => {
+          console.log("test");
+        }}
+        onEndReachedThreshold={0}
         ListFooterComponent={() => {
-          return isFetching ? (
-            <Text>Loading...</Text>
-          ) : (
-            <TouchableOpacity
-              disabled={isFetching}
-              style={{ padding: 10, alignItems: "center" }}
-              onPress={() => {
-                fetchMore();
-              }}
-            >
-              <Text>Load More</Text>
-            </TouchableOpacity>
+          return (
+            <View>
+              {isFetching ? (
+                <View style={{ padding: 20, alignItems: "center" }}>
+                  <ActivityIndicator color="#000" size="small" />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  disabled={isFetching}
+                  style={{ padding: 20, alignItems: "center" }}
+                  onPress={() => {
+                    fetchMore();
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: "Roboto",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Load More
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           );
         }}
       />

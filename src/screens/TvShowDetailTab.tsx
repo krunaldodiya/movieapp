@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const TvShowDetail = () => {
+const TvShowDetailTab = () => {
   return (
     <View>
-      <Text>TvShowDetail</Text>
+      <Text>TvShowDetailTab</Text>
     </View>
   );
 };
 
-export default TvShowDetail;
+export default TvShowDetailTab;
