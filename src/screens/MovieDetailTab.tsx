@@ -1,8 +1,8 @@
-import React from "react";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Entypo } from "@expo/vector-icons";
-import MovieLinks from "./Movies/MovieLinks";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import React from "react";
 import MovieDetail from "./Movies/MovieDetail";
+import MovieLinks from "./Movies/MovieLinks";
 
 const MovieDetailTab = ({ route, navigation }: any) => {
   const Tab = createMaterialTopTabNavigator();
@@ -10,7 +10,6 @@ const MovieDetailTab = ({ route, navigation }: any) => {
   return (
     <Tab.Navigator
       lazy={true}
-      initialRouteName="MovieInfo"
       swipeEnabled={true}
       tabBarPosition="bottom"
       tabBarOptions={{

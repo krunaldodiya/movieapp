@@ -7,7 +7,7 @@ const MovieDetail = ({ route, navigation }: any) => {
 
   const { data: movie } = useFetchMovieDetail(id);
 
-  const { release_date, title, imdb_id } = movie;
+  const { release_date, title, external_ids } = movie;
 
   const year = release_date?.split("-")[0];
 
@@ -15,7 +15,7 @@ const MovieDetail = ({ route, navigation }: any) => {
     <View>
       <Text>{title}</Text>
       <Text>{year}</Text>
-      <Text>{imdb_id}</Text>
+      <Text>{external_ids?.imdb_id}</Text>
     </View>
   );
 };

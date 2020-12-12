@@ -1,7 +1,7 @@
 import axios, { getSource } from "../libs/http";
 
 export type IQualities = "360p" | "480p" | "720p" | "1080p";
-interface FetchTorrentLinksApiPayload {
+export interface FetchTorrentLinksApiPayload {
   aka: string;
   imdb_id: string;
   quality: IQualities;
@@ -9,6 +9,7 @@ interface FetchTorrentLinksApiPayload {
 }
 
 export const fetchTorrentLinksApi = async (
+  _key: string,
   payload: FetchTorrentLinksApiPayload
 ): Promise<any> => {
   const { data } = await axios.post(
@@ -19,5 +20,5 @@ export const fetchTorrentLinksApi = async (
     }
   );
 
-  return data;
+  return data.links;
 };
