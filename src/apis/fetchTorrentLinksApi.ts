@@ -1,4 +1,5 @@
 import axios, { getSource } from "../libs/http";
+import { apiUrl } from "../libs/vars";
 
 export type IQualities = "360p" | "480p" | "720p" | "1080p";
 export interface FetchTorrentLinksApiPayload {
@@ -12,13 +13,9 @@ export const fetchTorrentLinksApi = async (
   _key: string,
   payload: FetchTorrentLinksApiPayload
 ): Promise<any> => {
-  const { data } = await axios.post(
-    "https://streamly.pauzr.com/api/links/movie",
-    payload,
-    {
-      cancelToken: getSource().token,
-    }
-  );
+  const { data } = await axios.post(`${apiUrl}/links/movie`, payload, {
+    cancelToken: getSource().token,
+  });
 
   return data.links;
 };
