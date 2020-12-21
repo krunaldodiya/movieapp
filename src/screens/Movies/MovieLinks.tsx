@@ -5,6 +5,7 @@ import { IQualities } from "../../apis/fetchTorrentLinksApi";
 import useFetchMovieDetail from "../../hooks/useFetchMovieDetail";
 import useFetchTorrentLinks from "../../hooks/useFetchTorrentLinks";
 import formatBytes from "../../libs/formatBytes";
+import axios from "../../libs/http";
 
 const qualities: IQualities[] = ["360p", "480p", "720p", "1080p"];
 
@@ -77,16 +78,14 @@ const MovieLinks = ({ route, navigation }: any) => {
                   }}
                   onPress={() => {
                     navigation.push("Player", {
-                      link: item?.magnet_link
-                        ? item?.magnet_link
-                        : item?.direct_link,
+                      link: item?.MagnetUri ? item?.MagnetUri : item?.Link,
                     });
                   }}
                 >
-                  <Text>{item?.title}</Text>
-                  <Text>{item?.seeders}</Text>
-                  <Text>{formatBytes(item?.size)}</Text>
-                  <Text>{item?.tracker}</Text>
+                  <Text>{item?.Title}</Text>
+                  <Text>Seeders {item?.Seeders}</Text>
+                  <Text>Size {formatBytes(item?.Size)}</Text>
+                  <Text>Tracker {item?.Tracker}</Text>
                 </TouchableOpacity>
               );
             }}

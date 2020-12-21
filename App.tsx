@@ -8,6 +8,8 @@ import Movies from "./src/screens/Movies";
 import Player from "./src/screens/Player";
 import TvShowDetailTab from "./src/screens/TvShowDetailTab";
 import TvShows from "./src/screens/TvShows";
+import MovieFilters from "./src/screens/Filters/MovieFilters";
+import TvShowFilters from "./src/screens/Filters/TvShowFilters";
 
 const Stack = createStackNavigator();
 
@@ -24,6 +26,8 @@ export default function App() {
         MovieDetail: "/movie-detail",
         MovieLinks: "/movie-links",
         Player: "/player",
+        MovieFilters: "/MovieFilters",
+        TvShowFilters: "/TvShowFilters",
       },
     },
   };
@@ -37,6 +41,8 @@ export default function App() {
         <Stack.Screen name="MovieDetailTab" component={MovieDetailTab} />
         <Stack.Screen name="TvShowDetailTab" component={TvShowDetailTab} />
         <Stack.Screen name="Player" component={Player} />
+        <Stack.Screen name="MovieFilters" component={MovieFilters} />
+        <Stack.Screen name="TvShowFilters" component={TvShowFilters} />
       </Stack.Navigator>
     </NavigationContainer>
   );

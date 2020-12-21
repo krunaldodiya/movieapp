@@ -4,9 +4,7 @@ import {
   ActivityIndicator,
   Dimensions,
   SafeAreaView,
-  Text,
   View,
-  BackHandler,
 } from "react-native";
 import { useTorrent } from "../hooks/useTorrent";
 

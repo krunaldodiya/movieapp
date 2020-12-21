@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "../libs/http";
+import axios, { getSource } from "../libs/http";
 import { apiUrl } from "../libs/vars";
 const api = "http://streamly.pauzr.com:9000";
 
@@ -12,15 +12,23 @@ export function useTorrent(link: string) {
       return link;
     }
 
-    const { data } = await axios.post(`${apiUrl}/playlist/magnet`, {
-      link: { direct_link: link },
-    });
+    const { data } = await axios.post(
+      `${apiUrl}/playlist/magnet`,
+      {
+        link: { direct_link: link },
+      },
+      {
+        cancelToken: getSource().token,
+      }
+    );
 
     return data;
   };
 
   const stopTorrent = async (hash: string) => {
-    axios.delete(`${api}/torrents/${hash}`);
+    axios.delete(`${api}/torrents/${hash}`, {
+      cancelToken: getSource().token,
+    });
   };
 
   const startTorrent = async () => {
@@ -34,7 +42,9 @@ export function useTorrent(link: string) {
 
   const startDownloading = async (data: any) => {
     axios
-      .get(`${api}/torrents/${data.infoHash}`)
+      .get(`${api}/torrents/${data.infoHash}`, {
+        cancelToken: getSource().token,
+      })
       .then(({ data }) => {
         if (data.files) {
           setInfoHash(data.infoHash);

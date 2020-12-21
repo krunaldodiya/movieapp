@@ -1,14 +1,14 @@
 import React from "react";
 import {
   ActivityIndicator,
+  Button,
   FlatList,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import Media from "../components/Media";
 import useFetchMovies from "../hooks/useFetchMovies";
+import LoadMore from "./LoadMore";
 
 const Movies = ({ navigation }: any) => {
   const { data: movies, fetchMore, isLoading, isFetching } = useFetchMovies();
@@ -23,6 +23,11 @@ const Movies = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
+      <Button
+        title="show filters"
+        onPress={() => navigation.push("MovieFilters")}
+      />
+
       <FlatList
         numColumns={4}
         data={sortedData}
@@ -42,35 +47,14 @@ const Movies = ({ navigation }: any) => {
           console.log("test");
         }}
         onEndReachedThreshold={0}
-        ListFooterComponent={() => {
-          return (
-            <View>
-              {isFetching ? (
-                <View style={{ padding: 20, alignItems: "center" }}>
-                  <ActivityIndicator color="#000" size="small" />
-                </View>
-              ) : (
-                <TouchableOpacity
-                  disabled={isFetching}
-                  style={{ padding: 20, alignItems: "center" }}
-                  onPress={() => {
-                    fetchMore();
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontFamily: "Roboto",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Load More
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          );
-        }}
+        ListFooterComponent={() => (
+          <LoadMore
+            isFetching={isFetching}
+            fetchMore={() => fetchMore()}
+            total_pages={movies && movies[0]?.total_pages}
+            page={movies && movies[0]?.page}
+          />
+        )}
       />
     </View>
   );

@@ -1,14 +1,14 @@
 import React from "react";
 import {
   ActivityIndicator,
+  Button,
   FlatList,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import Media from "../components/Media";
 import useFetchTvShows from "../hooks/useFetchTvShows";
+import LoadMore from "./LoadMore";
 
 const TvShows = ({ navigation }: any) => {
   const { data: series, fetchMore, isLoading, isFetching } = useFetchTvShows();
@@ -23,6 +23,11 @@ const TvShows = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
+      <Button
+        title="show filters"
+        onPress={() => navigation.push("TvShowFilters")}
+      />
+
       <FlatList
         numColumns={4}
         data={sortedData}
@@ -42,35 +47,14 @@ const TvShows = ({ navigation }: any) => {
           console.log("test");
         }}
         onEndReachedThreshold={0}
-        ListFooterComponent={() => {
-          return (
-            <View>
-              {isFetching ? (
-                <View style={{ padding: 20, alignItems: "center" }}>
-                  <ActivityIndicator color="#000" size="small" />
-                </View>
-              ) : (
-                <TouchableOpacity
-                  disabled={isFetching}
-                  style={{ padding: 20, alignItems: "center" }}
-                  onPress={() => {
-                    fetchMore();
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontFamily: "Roboto",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Load More
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          );
-        }}
+        ListFooterComponent={() => (
+          <LoadMore
+            isFetching={isFetching}
+            fetchMore={() => fetchMore()}
+            total_pages={series && series[0]?.total_pages}
+            page={series && series[0]?.page}
+          />
+        )}
       />
     </View>
   );
