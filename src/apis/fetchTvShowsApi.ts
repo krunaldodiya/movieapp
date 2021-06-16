@@ -22,6 +22,7 @@ export const fetchTvShowsApi = async (
   const url = `${tmdbApiUrl}/${section}/tv?api_key=${tmdbApiKey}`;
 
   const { data } = await axios.get(url, {
+    headers: { "Access-Control-Allow-Origin": "*" },
     cancelToken: getSource().token,
     params: { ...payload, page },
   });

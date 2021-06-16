@@ -22,6 +22,7 @@ export const fetchMoviesApi = async (
   const url = `${tmdbApiUrl}/${section}/movie?api_key=${tmdbApiKey}`;
 
   const { data } = await axios.get(url, {
+    headers: { "Access-Control-Allow-Origin": "*" },
     cancelToken: getSource().token,
     params: { ...payload, page },
   });

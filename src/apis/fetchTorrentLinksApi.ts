@@ -28,6 +28,7 @@ export const fetchTorrentLinksApi = async (
   const metadata = params.toString().replaceAll("+", " ");
 
   const { data } = await axios.get(`${api}?${metadata}`, {
+    headers: { "Access-Control-Allow-Origin": "*" },
     cancelToken: getSource().token,
   });
 
