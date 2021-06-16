@@ -1,5 +1,5 @@
 import axios, { getSource } from "../libs/http";
-import { apiUrl } from "../libs/vars";
+import { jackettApiKey, jackettApiUrl } from "../libs/vars";
 
 export type IQualities = "360p" | "480p" | "720p" | "1080p";
 export interface FetchTorrentLinksApiPayload {
@@ -7,24 +7,29 @@ export interface FetchTorrentLinksApiPayload {
   imdb_id: string;
   quality: IQualities;
   year: number;
+  audio_language?: string;
 }
-const api =
-  "http://streamly.pauzr.com:9117/api/v2.0/indexers/all/results?apikey=z9gps9m3ieusx5poe0418ku05gcs49dz";
+
+const api = `${jackettApiUrl}/api/v2.0/indexers/all/results`;
 
 export const fetchTorrentLinksApi = async (
   _key: string,
   payload: FetchTorrentLinksApiPayload
 ): Promise<any> => {
-  const { data } = await axios.get(
-    `${api}&Query=${payload.aka}+${payload.year}+${payload.quality}&Category[]=2000`,
-    {
-      cancelToken: getSource().token,
-    }
-  );
+  const query = `${payload.aka} ${payload.year} ${payload.quality} ${
+    payload.audio_language ? payload.audio_language : ""
+  }`;
 
-  // const { data } = await axios.post(`${apiUrl}/links/movie`, payload, {
-  //   cancelToken: getSource().token,
-  // });
+  const params = new URLSearchParams({
+    apikey: jackettApiKey,
+    Query: query,
+  });
+
+  const metadata = params.toString().replaceAll("+", " ");
+
+  const { data } = await axios.get(`${api}?${metadata}`, {
+    cancelToken: getSource().token,
+  });
 
   return data.Results;
 };
